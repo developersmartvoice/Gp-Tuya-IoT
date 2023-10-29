@@ -1,0 +1,37 @@
+[
+  {
+    "npmName": "MediaKit",
+    "version": "3.0.4",
+    "PBTGroupName": "TUNIMediaKit"
+  },
+  {
+    "npmName": "HomeKit",
+    "version": "3.3.0",
+    "PBTGroupName": "TUNIHomeKit"
+  },
+  {
+    "npmName": "DeviceKit",
+    "version": "4.0.8",
+    "PBTGroupName": "TUNIDeviceKit"
+  },
+  {
+    "npmName": "MapKit",
+    "version": "3.2.1",
+    "PBTGroupName": "TUNIMapKit"
+  },
+  {
+    "npmName": "BaseKit",
+    "version": "3.7.9",
+    "PBTGroupName": "TUNIBaseKit"
+  },
+  {
+    "npmName": "BizKit",
+    "version": "3.9.9",
+    "PBTGroupName": "TUNIBizKit"
+  },
+  {
+    "npmName": "MiniKit",
+    "version": "3.5.4",
+    "PBTGroupName": "TUNIMiniKit"
+  }
+]
