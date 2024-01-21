@@ -50,6 +50,7 @@ public class Login extends AppCompatActivity {
                     @Override
                     public void onSuccess(User user) {
                         Toast.makeText(Login.this, "Logged in with Username: "+user, Toast.LENGTH_SHORT).show();
+
                         Intent intent = new Intent(Login.this, Home.class);
                         startActivity(intent);
                     }

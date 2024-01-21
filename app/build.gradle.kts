@@ -29,7 +29,8 @@ android {
 
     signingConfigs {
         create("configName") {
-            storeFile = file("D:\\Android Studio Projects\\GpTempCtrl\\app\\libs\\gptmpctrl.jks")
+            storeFile = file("D:\\Android Studio Projects\\GpTempCtrl\\GpTempCtrl\\app\\libs\\gptmpctrl.jks")
+//            D:\Android Studio Projects\GpTempCtrl\GpTempCtrl\app
             storePassword = "a643637"
             keyAlias = "shibam"
             keyPassword = "a643637"
@@ -70,6 +71,8 @@ android {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
             jniLibs.pickFirsts.add("lib/*/libc++_shared.so")
+            jniLibs.pickFirsts.add("lib/*/libyuv.so")
+            jniLibs.pickFirsts.add("lib/*/libopenh264.so")
         }
     }
 }
@@ -83,17 +86,30 @@ dependencies {
     implementation("com.alibaba:fastjson:1.1.67.android")
     implementation("com.squareup.okhttp3:okhttp-urlconnection:3.14.9")
     implementation("com.facebook.soloader:soloader:0.10.4")
-    implementation("com.thingclips.smart:thingsmart:5.5.2")
-    implementation("androidx.core:core-ktx:1.9.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
-    implementation("androidx.activity:activity-compose:1.8.0")
+    implementation("com.facebook.infer.annotation:infer-annotation:0.18.0")
+    implementation("com.facebook.fresco:fresco:3.1.3")
+    implementation("com.thingclips.smart:thingsmart:5.8.1")
+    implementation("com.google.zxing:core:3.3.3")
+    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
+    implementation("androidx.activity:activity-compose:1.8.2")
+    implementation("com.thingclips.smart:thingsmart-ipcsdk:5.8.0")
+    implementation("com.thingclips.smart:thingsmart-ipc-camera-timeline:1.1.0")
+    implementation("com.thingclips.smart:thingsmart-ipc-camera-cloudtool:5.0.0")
+    implementation("com.thingclips.smart:thingsmart-logsdk:5.0.1")
+    implementation("com.thingclips.smart:thing-log-sdk:5.0.0")
+    implementation("com.thingclips.smart:thingsmart-p2p-channel-sdk:3.4.62")
+    implementation("com.thingclips.smart:thingsmart-lock-sdk:5.1.0")
+//    implementation("com.thingclips.smart:thingsmart-ipc-camera-autotest:5.0.0")
+//    implementation("com.tuya.smart:tuyasmart-shortcutparser:0.0.1")
+//    implementation("com.tuya.smart:tuyasmart-ipcsdk:4.0.0-4")
     implementation(platform("androidx.compose:compose-bom:2023.03.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.10.0")
+    implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
