@@ -301,57 +301,57 @@ public class GetCamera extends AppCompatActivity {
         });
     }
 
-    public void getAllVideoClipsStoredOnDay(){
-        year = Integer.parseInt(substring[0]);
-        month = Integer.parseInt(substring[1]);
-        day = Integer.parseInt(substring[2]);
-        mCameraP2P.queryRecordTimeSliceByDay(year, month, day, new OperationDelegateCallBack() {
-            @Override
-            public void onSuccess(int sessionId, int requestId, String data) {
-                // `data` indicates the list of returned video clips for the specified date.
-                parsePlaybackData(data);
-            }
-
-            @Override
-            public void onFailure(int sessionId, int requestId, int errCode) {
-//                mHandler.sendEmptyMessage(MSG_DATA_DATE_BY_DAY_FAIL);
-            }
-        });
-    }
-    public class RecordInfoBean {
-        private int count;
-        private List<TimePieceBean> items;
-
-        public int getCount() {
-            return count;
-        }
-
-        public void setCount(int count) {
-            this.count = count;
-        }
-
-        public List<TimePieceBean> getItems() {
-            return items;
-        }
-
-        public void setItems(List<TimePieceBean> items) {
-            this.items = items;
-        }
-    }
-
-    private void parsePlaybackData(Object obj) {
-
-        RecordInfoBean recordInfoBean = JSONObject.parseObject(obj.toString(), RecordInfoBean.class);
-        timeList.clear();
-        if (recordInfoBean.getCount() != 0) {
-            List<TimePieceBean> timePieceBeanList = recordInfoBean.getItems();
-            if (timePieceBeanList != null && timePieceBeanList.size() != 0) {
-                timeList.addAll(timePieceBeanList);
-            }
-//            mHandler.sendMessage(MessageUtil.getMessage(MSG_DATA_DATE_BY_DAY_SUCC, ARG1_OPERATE_SUCCESS));
-        } else {
-//            mHandler.sendMessage(MessageUtil.getMessage(MSG_DATA_DATE_BY_DAY_FAIL, ARG1_OPERATE_FAIL));
-        }
-    }
+//    public void getAllVideoClipsStoredOnDay(){
+//        year = Integer.parseInt(substring[0]);
+//        month = Integer.parseInt(substring[1]);
+//        day = Integer.parseInt(substring[2]);
+//        mCameraP2P.queryRecordTimeSliceByDay(year, month, day, new OperationDelegateCallBack() {
+//            @Override
+//            public void onSuccess(int sessionId, int requestId, String data) {
+//                // `data` indicates the list of returned video clips for the specified date.
+//                parsePlaybackData(data);
+//            }
+//
+//            @Override
+//            public void onFailure(int sessionId, int requestId, int errCode) {
+////                mHandler.sendEmptyMessage(MSG_DATA_DATE_BY_DAY_FAIL);
+//            }
+//        });
+//    }
+//    public class RecordInfoBean {
+//        private int count;
+//        private List<TimePieceBean> items;
+//
+//        public int getCount() {
+//            return count;
+//        }
+//
+//        public void setCount(int count) {
+//            this.count = count;
+//        }
+//
+//        public List<TimePieceBean> getItems() {
+//            return items;
+//        }
+//
+//        public void setItems(List<TimePieceBean> items) {
+//            this.items = items;
+//        }
+//    }
+//
+//    private void parsePlaybackData(Object obj) {
+//
+//        RecordInfoBean recordInfoBean = JSONObject.parseObject(obj.toString(), RecordInfoBean.class);
+//        timeList.clear();
+//        if (recordInfoBean.getCount() != 0) {
+//            List<TimePieceBean> timePieceBeanList = recordInfoBean.getItems();
+//            if (timePieceBeanList != null && timePieceBeanList.size() != 0) {
+//                timeList.addAll(timePieceBeanList);
+//            }
+////            mHandler.sendMessage(MessageUtil.getMessage(MSG_DATA_DATE_BY_DAY_SUCC, ARG1_OPERATE_SUCCESS));
+//        } else {
+////            mHandler.sendMessage(MessageUtil.getMessage(MSG_DATA_DATE_BY_DAY_FAIL, ARG1_OPERATE_FAIL));
+//        }
+//    }
 }
 
