@@ -2,15 +2,35 @@ package com.example.gptmpctrl;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+//import static com.example.gptmpctrl.utils.Constants.ARG1_OPERATE_FAIL;
+//import static com.example.gptmpctrl.utils.Constants.ARG1_OPERATE_SUCCESS;
+import static com.example.gptmpctrl.utils.Constants.MSG_CONNECT;
+import static com.example.gptmpctrl.utils.Constants.MSG_GET_VIDEO_CLARITY;
+import static com.example.gptmpctrl.utils.Constants.MSG_MUTE;
+import static com.example.gptmpctrl.utils.Constants.MSG_SCREENSHOT;
+import static com.example.gptmpctrl.utils.Constants.MSG_SET_CLARITY;
+import static com.example.gptmpctrl.utils.Constants.MSG_TALK_BACK_BEGIN;
+import static com.example.gptmpctrl.utils.Constants.MSG_TALK_BACK_OVER;
+import static com.example.gptmpctrl.utils.Constants.MSG_VIDEO_RECORD_BEGIN;
+import static com.example.gptmpctrl.utils.Constants.MSG_VIDEO_RECORD_FAIL;
+import static com.example.gptmpctrl.utils.Constants.MSG_VIDEO_RECORD_OVER;
+
+
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 
 import com.alibaba.fastjson.JSONObject;
@@ -29,11 +49,13 @@ import com.thingclips.smart.android.camera.sdk.bean.CloudStatusBean;
 import com.thingclips.smart.camera.camerasdk.thingplayer.callback.AbsP2pCameraListener;
 import com.thingclips.smart.camera.camerasdk.thingplayer.callback.OperationDelegateCallBack;
 import com.thingclips.smart.camera.ipccamerasdk.cloud.IThingCloudCamera;
+import com.thingclips.smart.camera.ipccamerasdk.p2p.ICameraP2P;
 import com.thingclips.smart.camera.middleware.cloud.bean.TimePieceBean;
 import com.thingclips.smart.camera.middleware.p2p.IThingSmartCameraP2P;
 import com.thingclips.smart.camera.middleware.widget.AbsVideoViewCallback;
 import com.thingclips.smart.camera.middleware.widget.ThingCameraView;
 import com.thingclips.smart.home.sdk.callback.IThingResultCallback;
+import com.example.gptmpctrl.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,11 +66,17 @@ public class GetCamera extends AppCompatActivity {
 //    private DeviceBean currentDeviceBean;
     private String deviceId;
 
-    private boolean isLiveStreaming = false;
+    private ImageView muteImg;
+
+    private TextView qualityTv;
+
+    private TextView speakTxt, recordTxt, photoTxt, replayTxt, settingTxt, cloudStorageTxt, messageCenterTxt, deviceInfoTxt, getClarity, debugTxt, ptzTxt;
+
+//    private boolean isLiveStreaming = false;
 
     private boolean isSupportCloudStorage;
 
-    private String yearMonthDay = "2024-01-21";
+    private String yearMonthDay = "2024-01-22";
 
     private int year;
     private int month;
@@ -65,6 +93,13 @@ public class GetCamera extends AppCompatActivity {
     private static final int ASPECT_RATIO_WIDTH = 9;
     private static final int ASPECT_RATIO_HEIGHT = 16;
 
+    private boolean isSpeaking = false;
+    private boolean isRecording = false;
+    private boolean isPlay = false;
+    private int previewMute = ICameraP2P.MUTE;
+    private int videoClarity = ICameraP2P.HD;
+    private String currVideoClarity;
+
     // 1. Create `IThingSmartCameraP2P`.
     IThingSmartCameraP2P mCameraP2P = null;
     IThingIPCCore cameraInstance = ThingIPCSdk.getCameraInstance();
@@ -74,7 +109,51 @@ public class GetCamera extends AppCompatActivity {
 
     AbsP2pCameraListener absP2pCameraListener;
 
-    private Button btnStopPreview;
+//    private Button btnStopPreview;
+
+
+    @SuppressLint("HandlerLeak")
+    private final Handler mHandler = new Handler() {
+        @SuppressLint("HandlerLeak")
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case MSG_CONNECT:
+//                    handleConnect(msg);
+                    break;
+                case MSG_SET_CLARITY:
+//                    handleClarity(msg);
+                    break;
+                case MSG_MUTE:
+//                    handleMute(msg);
+                    break;
+                case MSG_SCREENSHOT:
+//                    handlesnapshot(msg);
+                    break;
+                case MSG_VIDEO_RECORD_BEGIN:
+//                    ToastUtil.shortToast(GetCamera.this, getString(R.string.operation_suc));
+                    break;
+                case MSG_VIDEO_RECORD_FAIL:
+//                    ToastUtil.shortToast(GetCamera.this, getString(R.string.operation_failed));
+                    break;
+                case MSG_VIDEO_RECORD_OVER:
+//                    handleVideoRecordOver(msg);
+                    break;
+                case MSG_TALK_BACK_BEGIN:
+//                    handleStartTalk(msg);
+                    break;
+                case MSG_TALK_BACK_OVER:
+//                    handleStopTalk(msg);
+                    break;
+                case MSG_GET_VIDEO_CLARITY:
+//                    handleGetVideoClarity(msg);
+                    break;
+                default:
+                    break;
+            }
+            super.handleMessage(msg);
+        }
+    };
 
 
     @Override
@@ -94,7 +173,21 @@ public class GetCamera extends AppCompatActivity {
 
         findViewById(R.id.camera_video_view_Rl).setLayoutParams(layoutParams);
 
+        muteImg = findViewById(R.id.camera_mute);
+        qualityTv = findViewById(R.id.camera_quality);
+        speakTxt = findViewById(R.id.speak_Txt);
+        recordTxt = findViewById(R.id.record_Txt);
+        photoTxt = findViewById(R.id.photo_Txt);
+        replayTxt = findViewById(R.id.replay_Txt);
+        settingTxt = findViewById(R.id.setting_Txt);
+        cloudStorageTxt = findViewById(R.id.cloud_Txt);
+        messageCenterTxt = findViewById(R.id.message_center_Txt);
+        deviceInfoTxt = findViewById(R.id.info_Txt);
+        getClarity = findViewById(R.id.get_clarity_Txt);
+        debugTxt = findViewById(R.id.debug_Txt);
+        ptzTxt = findViewById(R.id.ptz_Txt);
 
+        muteImg.setSelected(true);
 
 
         Intent intent = getIntent();
@@ -128,7 +221,7 @@ public class GetCamera extends AppCompatActivity {
 
 
 
-            btnStopPreview = findViewById(R.id.btnStopPreview);
+//            btnStopPreview = findViewById(R.id.btnStopPreview);
 
 
             if (cameraInstance != null) {
@@ -203,6 +296,7 @@ public class GetCamera extends AppCompatActivity {
                         // A P2P connection is created.
                         Log.d(TAG, "P2P connection is created");
                         setLiveStreaming();
+//                        getAllVideoClipsStoredOnDay();
 
                     }
 
@@ -220,14 +314,78 @@ public class GetCamera extends AppCompatActivity {
             Log.d(TAG, "Device Id is not Found!");
         }
 
-        if(isLiveStreaming){
-            btnStopPreview.setVisibility(View.VISIBLE);
-        }
+//        if(isLiveStreaming){
+//            btnStopPreview.setVisibility(View.VISIBLE);
+//        }
 
-        btnStopPreview.setOnClickListener(new View.OnClickListener() {
+//        btnStopPreview.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                unsetLiveStreaming();
+//            }
+//        });
+
+        muteImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                unsetLiveStreaming();
+                int mute;
+                mute = previewMute == ICameraP2P.MUTE ? ICameraP2P.UNMUTE : ICameraP2P.MUTE;
+                mCameraP2P.setMute(mute, new OperationDelegateCallBack() {
+                    @Override
+                    public void onSuccess(int sessionId, int requestId, String data) {
+                        previewMute = Integer.valueOf(data);
+//                        mHandler.sendMessage(MessageUtil.getMessage(MSG_MUTE, ARG1_OPERATE_SUCCESS));
+                        Log.d(TAG, "Mute Click Successfully");
+                    }
+
+                    @Override
+                    public void onFailure(int sessionId, int requestId, int errCode) {
+//                        mHandler.sendMessage(MessageUtil.getMessage(MSG_MUTE, ARG1_OPERATE_FAIL, errCode));
+                        Log.d(TAG, "Can not operate! "+errCode);
+                    }
+                });
+            }
+        });
+        speakTxt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isSpeaking) {
+                    mCameraP2P.stopAudioTalk(new OperationDelegateCallBack() {
+                        @Override
+                        public void onSuccess(int sessionId, int requestId, String data) {
+                            isSpeaking = false;
+//                            mHandler.sendMessage(MessageUtil.getMessage(MSG_TALK_BACK_OVER, ARG1_OPERATE_SUCCESS));
+                            Log.d(TAG, "Can speak successfully! "+data);
+                        }
+
+                        @Override
+                        public void onFailure(int sessionId, int requestId, int errCode) {
+                            isSpeaking = false;
+//                            mHandler.sendMessage(MessageUtil.getMessage(MSG_TALK_BACK_OVER, ARG1_OPERATE_FAIL, errCode));
+
+                        }
+                    });
+                } else {
+                    if (Constants.hasRecordPermission()) {
+                        mCameraP2P.startAudioTalk(new OperationDelegateCallBack() {
+                            @Override
+                            public void onSuccess(int sessionId, int requestId, String data) {
+                                isSpeaking = true;
+//                                mHandler.sendMessage(MessageUtil.getMessage(MSG_TALK_BACK_BEGIN, ARG1_OPERATE_SUCCESS));
+                                Log.d(TAG, "You can speak now! "+data);
+                            }
+
+                            @Override
+                            public void onFailure(int sessionId, int requestId, int errCode) {
+                                isSpeaking = false;
+//                                mHandler.sendMessage(MessageUtil.getMessage(MSG_TALK_BACK_BEGIN, ARG1_OPERATE_FAIL));
+                                Log.d(TAG, "onFailure: Can't able to speak!! "+errCode);
+                            }
+                        });
+                    } else {
+                        Constants.requestPermission(GetCamera.this, Manifest.permission.RECORD_AUDIO, Constants.EXTERNAL_AUDIO_REQ_CODE, "open_recording");
+                    }
+                }
             }
         });
     }
@@ -269,12 +427,13 @@ public class GetCamera extends AppCompatActivity {
 //    }
 
     public void setLiveStreaming(){
-        mCameraP2P.startPreview(new OperationDelegateCallBack() {
+        mCameraP2P.startPreview(videoClarity,new OperationDelegateCallBack() {
             @Override
             public void onSuccess(int sessionId, int requestId, String data) {
                 // Live video streaming is started.
                 Log.d(TAG, "Live video streaming is started");
-                isLiveStreaming = true;
+//                isLiveStreaming = true;
+//                getAllVideoClipsStoredOnDay();
             }
 
             @Override
@@ -284,74 +443,74 @@ public class GetCamera extends AppCompatActivity {
             }
         });
     }
-    public void unsetLiveStreaming(){
-        mCameraP2P.stopPreview(new OperationDelegateCallBack() {
-            @Override
-            public void onSuccess(int sessionId, int requestId, String data) {
-                Log.d(TAG, "Preview Stopped");
-                mCameraP2P.removeOnP2PCameraListener(absP2pCameraListener);
-                mCameraP2P.destroyP2P();
-                isLiveStreaming = false;
-            }
-
-            @Override
-            public void onFailure(int sessionId, int requestId, int errCode) {
-
-            }
-        });
-    }
-
-//    public void getAllVideoClipsStoredOnDay(){
-//        year = Integer.parseInt(substring[0]);
-//        month = Integer.parseInt(substring[1]);
-//        day = Integer.parseInt(substring[2]);
-//        mCameraP2P.queryRecordTimeSliceByDay(year, month, day, new OperationDelegateCallBack() {
+//    public void unsetLiveStreaming(){
+//        mCameraP2P.stopPreview(new OperationDelegateCallBack() {
 //            @Override
 //            public void onSuccess(int sessionId, int requestId, String data) {
-//                // `data` indicates the list of returned video clips for the specified date.
-//                parsePlaybackData(data);
+//                Log.d(TAG, "Preview Stopped");
+//                mCameraP2P.removeOnP2PCameraListener(absP2pCameraListener);
+//                mCameraP2P.destroyP2P();
+//                isLiveStreaming = false;
 //            }
 //
 //            @Override
 //            public void onFailure(int sessionId, int requestId, int errCode) {
-////                mHandler.sendEmptyMessage(MSG_DATA_DATE_BY_DAY_FAIL);
+//
 //            }
 //        });
 //    }
-//    public class RecordInfoBean {
-//        private int count;
-//        private List<TimePieceBean> items;
+
+    public void getAllVideoClipsStoredOnDay(){
+        year = Integer.parseInt(substring[0]);
+        month = Integer.parseInt(substring[1]);
+        day = Integer.parseInt(substring[2]);
+        mCameraP2P.queryRecordTimeSliceByDay(year, month, day, new OperationDelegateCallBack() {
+            @Override
+            public void onSuccess(int sessionId, int requestId, String data) {
+                // `data` indicates the list of returned video clips for the specified date.
+                parsePlaybackData(data);
+            }
+
+            @Override
+            public void onFailure(int sessionId, int requestId, int errCode) {
+//                mHandler.sendEmptyMessage(MSG_DATA_DATE_BY_DAY_FAIL);
+            }
+        });
+    }
+    public class RecordInfoBean {
+        private int count;
+        private List<TimePieceBean> items;
+
+        public int getCount() {
+            return count;
+        }
+
+        public void setCount(int count) {
+            this.count = count;
+        }
+
+        public List<TimePieceBean> getItems() {
+            return items;
+        }
+
+        public void setItems(List<TimePieceBean> items) {
+            this.items = items;
+        }
+    }
 //
-//        public int getCount() {
-//            return count;
-//        }
-//
-//        public void setCount(int count) {
-//            this.count = count;
-//        }
-//
-//        public List<TimePieceBean> getItems() {
-//            return items;
-//        }
-//
-//        public void setItems(List<TimePieceBean> items) {
-//            this.items = items;
-//        }
-//    }
-//
-//    private void parsePlaybackData(Object obj) {
-//
-//        RecordInfoBean recordInfoBean = JSONObject.parseObject(obj.toString(), RecordInfoBean.class);
-//        timeList.clear();
-//        if (recordInfoBean.getCount() != 0) {
-//            List<TimePieceBean> timePieceBeanList = recordInfoBean.getItems();
-//            if (timePieceBeanList != null && timePieceBeanList.size() != 0) {
-//                timeList.addAll(timePieceBeanList);
-//            }
-////            mHandler.sendMessage(MessageUtil.getMessage(MSG_DATA_DATE_BY_DAY_SUCC, ARG1_OPERATE_SUCCESS));
-//        } else {
-////            mHandler.sendMessage(MessageUtil.getMessage(MSG_DATA_DATE_BY_DAY_FAIL, ARG1_OPERATE_FAIL));
-//        }
-//    }
+    private void parsePlaybackData(Object obj) {
+
+        RecordInfoBean recordInfoBean = JSONObject.parseObject(obj.toString(), RecordInfoBean.class);
+        timeList.clear();
+        if (recordInfoBean.getCount() != 0) {
+            List<TimePieceBean> timePieceBeanList = recordInfoBean.getItems();
+            if (timePieceBeanList != null && timePieceBeanList.size() != 0) {
+                timeList.addAll(timePieceBeanList);
+            }
+//            mHandler.sendMessage(MessageUtil.getMessage(MSG_DATA_DATE_BY_DAY_SUCC, ARG1_OPERATE_SUCCESS));
+        } else {
+//            mHandler.sendMessage(MessageUtil.getMessage(MSG_DATA_DATE_BY_DAY_FAIL, ARG1_OPERATE_FAIL));
+        }
+    }
 }
 
