@@ -8,6 +8,12 @@
         <string name="snapshot">Snapshot</string>
         <string name="record">Record</string>
         <string name="replay">Replay</string>
+        <string name="bluetooth">Bluetooth Mode</string>
+        <string name="scan">Scan</string>
+        <string name="scan_le">Start Scan</string>
+        <string name="paring">Start Paring</string>
+        <string name="combo">Start Combo</string>
+        <string name="combo_optimize">Start Optimize</string>
         <string name="cloud_video">Cloud video</string>
         <string name="message">Message</string>
         <string name="settings">Settings</string>

@@ -33,11 +33,12 @@ public class Home extends AppCompatActivity {
     private HomeBean currentHomeBean; // For storing Home Bean
     DeviceBean currentDeviceBean; //For storing device bean
     IThingActivator thingActivator; //Builder for searching devices
+    private long homeId;
     private EditText etWifiName;
     private EditText etWifiPass;
     private String ssId;
     private String pass;
-    private Button btnSearch;
+    private Button btnSearch,btnBluetooth;
     private String tokenGlobal; // For storing generated token
     private TextView etTxt1;
     private TextView etTxt2;
@@ -66,6 +67,7 @@ public class Home extends AppCompatActivity {
         createHome(homeName,roomList); // CreateHome function is called
 
         btnSearch = findViewById(R.id.btnSearch);
+        btnBluetooth = findViewById(R.id.btnBluetooth);
 
         // Execute when search device button is clicked
         btnSearch.setOnClickListener(new View.OnClickListener() {
@@ -100,6 +102,16 @@ public class Home extends AppCompatActivity {
                 }
             }
         });
+        btnBluetooth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                String homeIdStr = homeId.
+                Intent intent = new Intent(Home.this,BluetoothLeDevices.class);
+                intent.putExtra("homeId",String.valueOf(homeId));
+                intent.putExtra("token",tokenGlobal);
+                startActivity(intent);
+            }
+        });
     }
 
     private void createHome(String homeName,ArrayList<String>roomList) {
@@ -128,7 +140,7 @@ public class Home extends AppCompatActivity {
     }
 
     private void getActivationToken(){
-        long homeId = currentHomeBean.getHomeId(); // Fetching homeId from created home for generating token
+        homeId = currentHomeBean.getHomeId(); // Fetching homeId from created home for generating token
         // Generating token
         ThingHomeSdk.getActivatorInstance().getActivatorToken(homeId,
                 new IThingActivatorGetToken() {
@@ -137,6 +149,7 @@ public class Home extends AppCompatActivity {
                         etTxt2.setText("Token ID Generated");
                         Toast.makeText(Home.this, "Token ID Generated", Toast.LENGTH_SHORT).show();
 //                        serachDevice(token);
+                        Log.d("home Token", "onSuccess: Token: "+token);
                         tokenGlobal = token; // Storing the token for searching tuya devices
                     }
                     @Override
