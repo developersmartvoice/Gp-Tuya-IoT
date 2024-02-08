@@ -100,6 +100,7 @@ dependencies {
     implementation("com.thingclips.smart:thing-log-sdk:5.0.0")
     implementation("com.thingclips.smart:thingsmart-p2p-channel-sdk:3.4.62")
     implementation("com.thingclips.smart:thingsmart-lock-sdk:5.1.0")
+    implementation("com.google.code.gson:gson:2.10.1") // Replace with the latest version
 //    implementation("com.thingclips.smart:thingsmart-ipc-camera-autotest:5.0.0")
 //    implementation("com.tuya.smart:tuyasmart-shortcutparser:0.0.1")
 //    implementation("com.tuya.smart:tuyasmart-ipcsdk:4.0.0-4")

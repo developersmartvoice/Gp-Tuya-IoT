@@ -2,6 +2,7 @@ package com.example.gptmpctrl;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -208,15 +209,20 @@ public class BluetoothLeDevices extends AppCompatActivity {
 				ThingHomeSdk.getActivator().newMultiModeActivator().stopActivator(deviceBeanG.getUuid());
 				etBluLe.setText("");
 				etBluLe.setText("Device paired!");
-				
+				Intent intent = new Intent(BluetoothLeDevices.this,FourGangControl.class);
+				intent.putExtra("homeId",String.valueOf(homeId));
+				intent.putExtra("deviceId",deviceBeanG.devId);
+				startActivity(intent);
 			}
 			
 			@Override
 			public void onFailure(int code, String msg, Object handle) {
-				// Failed to pair the device.
+				Log.d(TAG, "onFailure: Failed to paired with "+resultG.getName());
 			}
 			public void onActivatorStatePauseCallback(PauseStateData stateData) {
 				// The data that is reported by the device, including the status of the connection to the router. For more information, see the descriptions of parameters.
+				Log.d(TAG, "onActivatorStatePauseCallback: "+stateData.data);
+				Log.d(TAG, "onActivatorStatePauseCallback: "+stateData.toString());
 			}
 		});
 		

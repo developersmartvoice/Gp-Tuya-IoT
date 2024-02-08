@@ -27,6 +27,11 @@
         <string name="pause">Pause</string>
         <string name="resume">Resume</string>
         <string name="stop">Stop</string>
+        <string name="four_gang">Four Gang Smart Switch</string>
+        <string name="switch1">Switch 1</string>
+        <string name="switch2">Switch 2</string>
+        <string name="switch3">Switch 3</string>
+        <string name="switch4">Switch 4</string>
         <string name="message_title">Detection Alarm</string>
         <string name="info_title">Device Info</string>
         <string name="low_power">is low power: </string>
