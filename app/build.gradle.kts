@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -85,7 +86,7 @@ dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar"))))
     implementation("com.alibaba:fastjson:1.1.67.android")
     implementation("com.squareup.okhttp3:okhttp-urlconnection:3.14.9")
-    implementation("com.facebook.soloader:soloader:0.10.4")
+    implementation("com.facebook.soloader:soloader:0.10.5")
     implementation("com.facebook.infer.annotation:infer-annotation:0.18.0")
     implementation("com.facebook.fresco:fresco:3.1.3")
     implementation("com.thingclips.smart:thingsmart:5.8.1")
@@ -104,6 +105,8 @@ dependencies {
 //    implementation("com.thingclips.smart:thingsmart-ipc-camera-autotest:5.0.0")
 //    implementation("com.tuya.smart:tuyasmart-shortcutparser:0.0.1")
 //    implementation("com.tuya.smart:tuyasmart-ipcsdk:4.0.0-4")
+    implementation(platform("com.google.firebase:firebase-bom:32.7.2"))
+    implementation("com.google.firebase:firebase-messaging:23.4.1")
     implementation(platform("androidx.compose:compose-bom:2023.03.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")

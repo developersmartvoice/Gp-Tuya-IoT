@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "539254452419",
+    "project_id": "gp-tuya-iot-371fd",
+    "storage_bucket": "gp-tuya-iot-371fd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:539254452419:android:53bc8ab0b63aee5eaaf276",
+        "android_client_info": {
+          "package_name": "com.example.gptmpctrl"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyByMZeTVwg9cpN7iuxpgC7o0u1icREMH5Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

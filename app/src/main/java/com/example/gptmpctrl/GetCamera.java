@@ -31,6 +31,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.alibaba.fastjson.JSONObject;
@@ -43,9 +44,12 @@ import com.thingclips.imagepipeline.okhttp3.DecryptImageRequest;
 import com.thingclips.smart.android.camera.sdk.ThingIPCSdk;
 import com.thingclips.smart.android.camera.sdk.api.IThingIPCCloud;
 import com.thingclips.smart.android.camera.sdk.api.IThingIPCCore;
+import com.thingclips.smart.android.camera.sdk.api.IThingIPCDoorBellManager;
 import com.thingclips.smart.android.camera.sdk.api.IThingIPCDoorbell;
 import com.thingclips.smart.android.camera.sdk.api.IThingIPCDpHelper;
 import com.thingclips.smart.android.camera.sdk.bean.CloudStatusBean;
+import com.thingclips.smart.android.camera.sdk.bean.ThingDoorBellCallModel;
+import com.thingclips.smart.android.camera.sdk.callback.ThingSmartDoorBellObserver;
 import com.thingclips.smart.camera.camerasdk.thingplayer.callback.AbsP2pCameraListener;
 import com.thingclips.smart.camera.camerasdk.thingplayer.callback.OperationDelegateCallBack;
 import com.thingclips.smart.camera.ipccamerasdk.cloud.IThingCloudCamera;
@@ -56,6 +60,7 @@ import com.thingclips.smart.camera.middleware.widget.AbsVideoViewCallback;
 import com.thingclips.smart.camera.middleware.widget.ThingCameraView;
 import com.thingclips.smart.home.sdk.callback.IThingResultCallback;
 import com.example.gptmpctrl.utils.Constants;
+import com.thingclips.smart.sdk.bean.DeviceBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,7 +92,10 @@ public class GetCamera extends AppCompatActivity {
     private List<TimePieceBean> timeList = new ArrayList<>();
 
     private IThingCloudCamera cloudCamera;
-
+    
+    private final IThingIPCDoorBellManager doorBellInstance =
+            ThingIPCSdk.getDoorbell().getIPCDoorBellManagerInstance();
+//    private ThingDoorBellCallModel mCallModel;
     IThingIPCDpHelper ipcDpHelper;
 
     private static final int ASPECT_RATIO_WIDTH = 9;
@@ -110,8 +118,30 @@ public class GetCamera extends AppCompatActivity {
     AbsP2pCameraListener absP2pCameraListener;
 
 //    private Button btnStopPreview;
-
-
+    
+    private ThingDoorBellCallModel mCallModel;
+    
+    private final ThingSmartDoorBellObserver observer = new ThingSmartDoorBellObserver() {
+        @Override
+        public void doorBellCallDidReceivedFromDevice(ThingDoorBellCallModel callModel, DeviceBean deviceModel) {
+            mCallModel = callModel;
+            Log.d(TAG, "doorBellCallDidReceivedFromDevice: "+mCallModel.toString());
+        }
+        
+        @Override
+        public void doorBellCallDidAnsweredByOther(ThingDoorBellCallModel callModel) {
+        }
+        
+        @Override
+        public void doorBellCallDidCanceled(ThingDoorBellCallModel callModel, boolean isTimeOut) {
+        }
+        
+        @Override
+        public void doorBellCallDidHangUp(ThingDoorBellCallModel callModel) {
+        }
+    };
+    
+    
     @SuppressLint("HandlerLeak")
     private final Handler mHandler = new Handler() {
         @SuppressLint("HandlerLeak")
@@ -154,7 +184,9 @@ public class GetCamera extends AppCompatActivity {
             super.handleMessage(msg);
         }
     };
-
+    
+//        ThingSmartDoorBellObserver observer;
+    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -195,7 +227,8 @@ public class GetCamera extends AppCompatActivity {
         if (intent.hasExtra("DeviceId")){
             deviceId = intent.getStringExtra("DeviceId");
             Log.d(TAG, "Device ID: "+deviceId);
-
+            
+            Log.d(TAG, "Door Bell Instance: "+doorBellInstance.getAllObservers());
             IThingIPCCloud cloud = ThingIPCSdk.getCloud();
             if (cloud != null) {
                 isSupportCloudStorage = cloud.isSupportCloudStorage(deviceId);
@@ -388,6 +421,7 @@ public class GetCamera extends AppCompatActivity {
                 }
             }
         });
+        doorBellInstance.addObserver(observer);
     }
 
 //    public void stopLiveStream(){
